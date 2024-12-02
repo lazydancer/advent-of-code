@@ -20,21 +20,12 @@ def part_2():
     
     count = 0
     for report in reports:
-        valid = False
-        diffs = [b - a for a, b in zip(report, report[1:])]
-
-        if all(1 <= d <= 3 for d in diffs) or all(-3 <= d <= -1 for d in diffs):
-            valid = True
-        else:
-            for i in range(len(report)):
-                sub = report[:i] + report[i+1:]
-                sub_diffs = [b - a for a, b in zip(sub, sub[1:])]
-                if all(1 <= d <= 3 for d in sub_diffs) or all(-3 <= d <= -1 for d in sub_diffs):
-                    valid = True
-                    break
-
-        if valid:
-            count += 1
+        for i in range(len(report)):
+            sub = report[:i] + report[i+1:]
+            sub_diffs = [b - a for a, b in zip(sub, sub[1:])]
+            if all(1 <= d <= 3 for d in sub_diffs) or all(-3 <= d <= -1 for d in sub_diffs):
+                count += 1
+                break
 
     print(count)
 
