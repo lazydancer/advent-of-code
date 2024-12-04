@@ -1,5 +1,5 @@
 def part_1():
-    with open('input.txt', 'r') as f:
+    with open('input', 'r') as f:
         lines = [line.strip() for line in f]
 
     reports = [[int(n) for n in line.split()] for line in lines]

@@ -1,7 +1,7 @@
 import re
 
 def part_1():
-    with open('input.txt', 'r') as f:
+    with open('input', 'r') as f:
         lines = [line.strip() for line in f]
 
     input_string = ''.join(lines)

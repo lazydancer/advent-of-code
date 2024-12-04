@@ -2,7 +2,7 @@ from collections import Counter
 
 
 def read_input():
-    with open('input.txt', 'r') as f:
+    with open('input', 'r') as f:
         lines = [line.strip() for line in f]
 
     first_list = []
