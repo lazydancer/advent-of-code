@@ -1,5 +1,4 @@
 
-
 def process(part):
     with open('input', 'r') as f:
         garden_plot = [list(n) for n in f.read().split()]
@@ -59,8 +58,6 @@ def process(part):
         return filtered
 
 
-
-    
     result = 0
     if part == 1:
         for region in regions:
