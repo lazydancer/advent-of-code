@@ -1,5 +1,5 @@
-from functools import cache
 from collections import deque
+from functools import cache
 
 KEYS = {
     "numerical": [
@@ -10,7 +10,7 @@ KEYS = {
     ],
     "directional": [
         [None, "^", "A"],
-        [ "<", "^", ">"]
+        [ "<", "v", ">"]
     ]
 }
 
@@ -22,31 +22,47 @@ DIRECTIONS = {
 }
 
 
-# incomplete
-
 def next(vacy, vacx, rady, radx, tempy, tempx, action):
+    
     if action == "A":
-
         temp = get_key(KEYS["directional"], (tempy, tempx))
         if temp is None:
-           return None, None, None, None, None, None, None
+           return (None,) * 7
         
         if temp  == "A":
             rad = get_key(KEYS["directional"], (rady, radx))
             if rad is None:
-                return None, None, None, None, None, None, None
+                return (None,) * 7
 
             if rad == "A":
                 return vacy, vacx, rady, radx, tempy, tempx, get_key(KEYS["numerical"], (vacy, vacx))
             
             if rad in DIRECTIONS.keys():
-                return vacy + DIRECTIONS[rad][0], vacx + DIRECTIONS[rad][1], rady, radx, tempy, tempx, None
+                dy, dx = DIRECTIONS[rad]
+
+                if get_key(KEYS["numerical"], (vacy + dy, vacx + dx)) is None:
+                    return (None,) * 7
+
+                return vacy + dy, vacx + dx, rady, radx, tempy, tempx, None
         
         if temp in DIRECTIONS.keys():
-            return vacy, vacx, rady + DIRECTIONS[temp][0], radx + DIRECTIONS[temp][1], tempy, tempx, None
+            
+            dy, dx = DIRECTIONS[temp]
+
+            if get_key(KEYS["directional"], (rady + dy, radx + dx)) is None:
+                return (None,) * 7
+
+            return vacy, vacx, rady + dy, radx + dx, tempy, tempx, None
 
     if action in DIRECTIONS.keys():
-        return vacy, vacx, rady, radx, tempy + DIRECTIONS[action][0], tempx + DIRECTIONS[action][1], None
+
+        dy, dx = DIRECTIONS[action]
+
+
+        if get_key(KEYS["directional"], (tempy + dy, tempx + dx)) is None:
+            return (None,) * 7
+
+        return vacy, vacx, rady, radx, tempy + dy, tempx + dx, None
 
 
 
@@ -66,6 +82,8 @@ def get_key(matrix, loc):
 
     if 0 <= y < len(matrix) and 0 <= x < len(matrix[0]):
         return matrix[y][x]
+
+    return None
 
 
 
@@ -90,16 +108,13 @@ def bps(from_key, to_key):
             continue
         visited.add(state)
 
-        if len(queue) % 1000 == 0:
-            print(presses)
-
         vacy, vacx, rady, radx, tempy, tempx, pressed = next(vacy, vacx, rady, radx, tempy, tempx, action)
         
         if vacy is None: # invalid state
             continue
 
         if pressed == to_key:
-            return pressed
+            return presses
 
         if pressed is None:
             queue += [(vacy, vacx, rady, radx, tempy, tempx, action, presses + 1) for action in actions]
@@ -107,14 +122,29 @@ def bps(from_key, to_key):
 
 
 
-
 def part1():
-    with open('input_test', 'r') as f:
+    with open('input', 'r') as f:
         codes = [line.rstrip('\n') for line in f]
 
-    print(bps("A", "0"))
 
 
+    overall_result = 0
+    for code in codes:
+        result = 0
+        result += bps("A"    , code[0])
+        print(result)
+        result += bps(code[0], code[1])
+        print(result)
+        result += bps(code[1], code[2])
+        print(result)
+        result += bps(code[2], code[3])
+        print(result)
+        print("final:", result + 4)
+        print("final:", int(code[:-1]))
+        overall_result += ((result + 4) * int(code[:-1]))
+
+
+    print(overall_result)
 
 
 part1()
